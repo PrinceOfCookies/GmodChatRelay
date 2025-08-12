@@ -1,7 +1,7 @@
 require("dotenv").config();
 
 const { TOKEN, WS, PORT, RELAY_CHANNEL, SERVER_IP, MY_IP } = process.env;
-const { Client, GatewayIntentBits } = require("discord.js");
+const { Client, GatewayIntentBits, MessageFlags } = require("discord.js");
 const WebSocket = require("ws");
 
 const client = new Client({
@@ -199,7 +199,7 @@ client.on("messageCreate", async (msg) => {
   if (msg.content.length > textLimit) {
     await msg.reply({
       content: `Your message is too long! The limit is ${textLimit} characters.`,
-      flags: [64],
+      flags: MessageFlags.Ephemeral,
     });
     msg.delete().catch(console.error);
     return;
@@ -212,7 +212,7 @@ client.on("messageCreate", async (msg) => {
   if (now < lastGot + 1000) {
     await msg.reply({
       content: "Please wait a moment before sending another message.",
-      flags: [64],
+      flags: MessageFlags.Ephemeral,
     });
     msg.delete().catch(console.error);
     return;
@@ -267,7 +267,7 @@ client.on("messageCreate", async (msg) => {
     console.error("Error sending message to WebSocket:", error);
     await msg.reply({
       content: "Failed to send message to the server.",
-      flags: [64],
+      flags: MessageFlags.Ephemeral,
     });
     msg.delete().catch(console.error);
   }
