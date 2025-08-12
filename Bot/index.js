@@ -223,18 +223,11 @@ client.on("messageCreate", async (msg) => {
   const name = msg.author.globalName || msg.author.username;
   let text = msg.content;
 
-  const mentionRgex = /<@!?(\d+)>/g;
-  const mentionmatches = text.match(mentionRgex);
+  const usersMentioned = msg.mentions.users;
 
-  if (mentionmatches) {
-    for (const mention of mentionmatches) {
-      const userId = mention.replace(/<@!?|>/g, "");
-      const user = await client.users.fetch(userId).catch(console.error);
-      if (user) {
-        const globalName = user.globalName || user.username;
-        text = text.replace(mention, `@${globalName}`);
-      }
-    }
+  for (const [_, user] of usersMentioned) {
+    const globalName = user.globalName || user.username;
+    text = text.replace(`<@${user.id}>`, `@${globalName}`);
   }
 
   const payload = {
