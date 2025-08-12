@@ -105,8 +105,6 @@ client
       ws.close();
     });
 
-    require("dotenv").config();
-
     const wsServer = new WebSocket.Server({ PORT }, () => {
       console.log(`WebSocket server is running on ws://${WS}:${PORT}`);
     });
