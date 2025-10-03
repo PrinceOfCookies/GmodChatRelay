@@ -1,24 +1,13 @@
 local type = type
-
 local function cleanString(str)
     return string.lower(string.replace(str, " ", ""))
 end
 
 local function isValidMessage(text, name)
-    if not text or type(text) ~= "string" or text == "" then
-        return false, "Invalid text"
-    end
-    if not name or type(name) ~= "string" or name == "" then
-        return false, "Invalid name"
-    end
-
-    if string.len(text) > 200 then
-        return false, "Text too long"
-    end
-
-    if string.len(name) > 32 then
-        return false, "Name too long"
-    end
+    if not text or type(text) ~= "string" or text == "" then return false, "Invalid text" end
+    if not name or type(name) ~= "string" or name == "" then return false, "Invalid name" end
+    if string.len(text) > 200 then return false, "Text too long" end
+    if string.len(name) > 32 then return false, "Name too long" end
     return true
 end
 
@@ -53,7 +42,6 @@ net.Receive("chatRelay", function(len, ply)
     local color = net.ReadColor()
     local name = net.ReadString()
     local playerLookup = {}
-
     local suc, er = isValidMessage(text, name)
     if not suc then
         print("❗ Invalid message format received:", er, "(" .. ply:SteamID64() .. ")")
@@ -65,6 +53,5 @@ net.Receive("chatRelay", function(len, ply)
     end
 
     local formattedText = replaceMentions(text, playerLookup)
-
     chat.AddText(Color(129, 129, 129), "[Discord Relay] ", color, " " .. name, Color(255, 255, 255), ": ", unpack(formattedText))
 end)
