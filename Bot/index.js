@@ -10,6 +10,8 @@ let lastMessageTime = 0;
 let lastGot = 0;
 const TEXT_LIMIT = 1028;
 const RECONNECT_DELAY = 3000;
+const HIDDEN_MESSAGE_PREFIX = "(h)";
+const MESSAGE_RELAY_COOLDOWN = 1000; // 1 second
 
 // Util
 function hexToRGB(hex) {
@@ -52,7 +54,7 @@ client.once("ready", () => {
 client.on("messageCreate", async (message) => {
   if (message.author.bot || message.channel.type === ChannelType.DM) return;
   if (message.channel.id !== RELAY_CHANNEL) return;
-  if (!message.content || message.content.startsWith("(h) ")) return;
+  if (!message.content || message.content.startsWith(HIDDEN_MESSAGE_PREFIX)) return;
 
   if (message.content.length > TEXT_LIMIT) {
     await message.reply({
@@ -63,7 +65,7 @@ client.on("messageCreate", async (message) => {
   }
 
   const curTime = Date.now();
-  if (now < lastGot + 1000) {
+  if (curTime < lastGot + MESSAGE_RELAY_COOLDOWN) {
     await message.reply({
       content: "Please wait a moment before sending another message.",
       flags: MessageFlags.Ephemeral,

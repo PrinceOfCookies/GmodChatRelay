@@ -29,19 +29,16 @@ end
 
 hook.Add("PlayerSay", "ChatRelay", function(ply, text)
     if not IsValid(ply) or ply:IsBot() then return end
-    local name = ply:Name()
     local time = os.time() * 1000 -- Convert to milliseconds
-    wsRelay:send("sendMessage", string.format("%s,%d,%s", text, time, name))
+    wsRelay:send("sendMessage", string.format("%s,%d,%s", text, time, ply:Name()))
 end)
 
 hook.Add("PlayerInitialSpawn", "ChatRelay", function(ply)
     if not IsValid(ply) or ply:IsBot() then return end
-    local name = ply:Name()
-    wsRelay:send("sendMessage", string.format("%s,%d,%s", "has joined!", 0, name))
+    wsRelay:send("sendMessage", string.format("%s,%d,%s", "has joined!", 0, ply:Name()))
 end)
 
 hook.Add("PlayerDisconnected", "ChatRelay", function(ply)
     if not IsValid(ply) or ply:IsBot() then return end
-    local name = ply:Name()
-    wsRelay:send("sendMessage", string.format("%s,%d,%s", "has left", 0, name))
+    wsRelay:send("sendMessage", string.format("%s,%d,%s", "has left", 0, ply:Name()))
 end)
